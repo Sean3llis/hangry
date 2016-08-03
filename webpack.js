@@ -1,8 +1,12 @@
 exports.dev = {
-  entry: './source/index.js',
+  entry: {
+    hangry: './source/hangry.js'
+  },
   output: {
     path: 'dist',
     filename: '[name].js',
+    libraryTarget: 'var',
+    library: 'Hangry'
   },
   module: {
     loaders: [

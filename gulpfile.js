@@ -1,7 +1,7 @@
 var gulp = require('gulp');
 var gutil = require('gulp-util');
 var webpack = require('webpack');
-var config = require('./webpack.js');
+var config = require('./webpack.js').dev;
 var compiler = webpack(config);
 
 gulp.task('pack', function(callback) {
