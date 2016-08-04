@@ -1,7 +1,6 @@
 class Hangry {
-  constructor() {
-
+  constructor(test) {
+    this.test = test;
   }
 }
-
 module.exports = Hangry;
