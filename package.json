@@ -1,19 +1,22 @@
 {
   "name": "hangry",
   "version": "1.0.0",
-  "description": "hangryyyy",
+  "description": "hangry",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
+  "scripts": {},
+  "author": "sean ellis",
   "license": "ISC",
-  "dependencies": {
+  "devDependencies": {
     "babel-core": "^6.11.4",
     "babel-loader": "^6.2.4",
     "babel-preset-es2015": "^6.9.0",
+    "expose-loader": "^0.7.1",
     "gulp": "^3.9.1",
+    "gulp-clean": "^0.3.2",
     "webpack": "^1.13.1",
     "webpack-dev-server": "^1.14.1"
+  },
+  "dependencies": {
+    "phaser": "^2.6.1"
   }
 }
