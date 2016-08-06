@@ -13,6 +13,7 @@ class Hangry extends Phaser.Game {
     let height = document.documentElement.clientHeight > 1024 ? 1024 : document.documentElement.clientHeight;
     super(width, height, Phaser.AUTO, 'mount', null);
     this.state.add('Boot', Boot, false);
+    this.state.start('Boot');
   }
 }
 
