@@ -55,6 +55,10 @@ var Hangry =
 	
 	var _phaser2 = _interopRequireDefault(_phaser);
 	
+	var _state = __webpack_require__(8);
+	
+	var _state2 = _interopRequireDefault(_state);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -62,6 +66,11 @@ var Hangry =
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	/**
+	 * STATES:
+	 */
+	
 	
 	var Hangry = function (_Phaser$Game) {
 	  _inherits(Hangry, _Phaser$Game);
@@ -71,11 +80,17 @@ var Hangry =
 	
 	    var width = document.documentElement.clientWidth > 768 ? 768 : document.documentElement.clientWidth;
 	    var height = document.documentElement.clientHeight > 1024 ? 1024 : document.documentElement.clientHeight;
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(Hangry).call(this, width, height, _phaser2.default.AUTO, 'content', null));
+	
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Hangry).call(this, width, height, _phaser2.default.AUTO, 'mount', null));
+	
+	    _this.state.add('Boot', _state2.default, false);
+	    return _this;
 	  }
 	
 	  return Hangry;
 	}(_phaser2.default.Game);
+	
+	window.game = new Hangry();
 
 /***/ },
 /* 1 */
@@ -103072,6 +103087,59 @@ var Hangry =
 	};
 	process.umask = function() { return 0; };
 
+
+/***/ },
+/* 8 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _phaser = __webpack_require__(5);
+	
+	var _phaser2 = _interopRequireDefault(_phaser);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var Boot = function (_Phaser$State) {
+	  _inherits(Boot, _Phaser$State);
+	
+	  function Boot() {
+	    _classCallCheck(this, Boot);
+	
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(Boot).apply(this, arguments));
+	  }
+	
+	  _createClass(Boot, [{
+	    key: 'preload',
+	    value: function preload() {
+	      game.load.image('sky', 'assets/sky.png');
+	      game.load.image('ground', 'assets/platform.png');
+	      game.load.image('star', 'assets/star.png');
+	      game.load.spritesheet('dude', 'assets/dude.png', 32, 48);
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      console.log('render');
+	    }
+	  }]);
+	
+	  return Boot;
+	}(_phaser2.default.State);
+	
+	exports.default = Boot;
 
 /***/ }
 /******/ ]);
