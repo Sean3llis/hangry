@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import Player from '../models/player';
 
 export default class Boot extends Phaser.State {
   preload() {
@@ -18,7 +19,15 @@ export default class Boot extends Phaser.State {
     this.ground.scale.setTo(2, 2);
     this.makePlatform(400,400,'ground');
     this.makePlatform(-150,250,'ground');
-    this.makePlayer(0.2, 300);
+    this.player = new Player(game, {
+      bounce: 0.2,
+      gravity: 800,
+      x: 32,
+      y: game.world.height - 150,
+      asset: 'dude'
+    });
+    this.game.add.existing(this.player);
+    this.cursors = game.input.keyboard.createCursorKeys();
   }
 
   makePlatform(x, y, asset) {
@@ -30,18 +39,32 @@ export default class Boot extends Phaser.State {
   makePlayer(bounce, gravity) {
     let game = this.game;
     let player = this.player = game.add.sprite(32, game.world.height - 150, 'dude');
-    game.physics.arcade.enable(player);
     player.body.bounce.y = bounce;
     player.body.gravity.y = gravity;
     player.body.collideWorldBounds = true;
-    player.animations.add('left', [0, 1, 2, 3], 10, true);
-    player.animations.add('right', [5, 6, 7, 8], 10, true);
+
   }
 
   update() {
     let game = this.game;
-    game.physics.arcade.collide(this.player, this.platforms);
+    let player = this.player;
+    game.physics.arcade.collide(player, this.platforms);
+    this.handlePlayerMovement(player);
   }
+
+  handlePlayerMovement() {
+    let cursors = this.cursors;
+    let player = this.player;
+    if (cursors.left.isDown) {
+      player.runLeft();
+    } else if (cursors.right.isDown) {
+      player.runRight();
+    } else {
+      player.stop();
+    }
+    if (cursors.up.isDown) player.body.velocity.y = -350;
+  }
+
 
   render() {
   }
