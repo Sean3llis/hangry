@@ -103136,6 +103136,7 @@ var Hangry =
 	    value: function preload() {
 	      game.load.image('sky', 'assets/sky.png');
 	      game.load.image('platform', 'assets/platform.png');
+	      game.load.image('diamond', 'assets/diamond.png');
 	      game.load.image('star', 'assets/star.png');
 	      game.load.spritesheet('dude', 'assets/dude.png', 32, 48);
 	    }
@@ -103150,8 +103151,8 @@ var Hangry =
 	        x: 32,
 	        y: game.world.height - 150
 	      });
-	      this.platforms = game.add.group();
-	      this.platforms.enableBody = true;
+	      this.platforms = new _platform2.default(game, {});
+	      this.platforms.create(100, 100, 'diamond');
 	      this.floor = new _platform2.default(game, { x: game.world.height - 120, y: 0 });
 	      this.game.add.existing(this.player);
 	      this.game.camera.follow(this.player);
@@ -103299,24 +103300,17 @@ var Hangry =
 	
 	    _classCallCheck(this, Platform);
 	
-	    config.name = config.name || 'platform';
+	    config.name = config.name || 'platforms';
 	    config.addToStage = config.addToStage || true;
 	    config.enableBody = config.enableBody || true;
 	    config.physicsBodyType = config.physicsBodyType || _phaser2.default.Physics.ARCADE;
-	    var platform = (_this = _possibleConstructorReturn(this, Object.getPrototypeOf(Platform).call(this, game, config.x, config.y, 'platform')), _this);
-	    platform.enableBody = true;
+	
+	    var platform = (_this = _possibleConstructorReturn(this, Object.getPrototypeOf(Platform).call(this, game, null, config.name, config.addToStage, config.enableBody, config.physicsBodyType)), _this);
 	    return _this;
 	  }
 	
 	  return Platform;
 	}(_phaser2.default.Group);
-	
-	// makePlatform(x, y, asset) {
-	//   let platform = this.platforms.create(x,y,asset);
-	//   platform.body.immovable = true;
-	//   return platform;
-	// }
-	
 	
 	exports.default = Platform;
 

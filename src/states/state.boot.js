@@ -3,12 +3,13 @@ import Phaser from 'phaser';
  * Models:
  */
 import Player from '../models/player';
-import Platform from '../models/platform';
+import PlatformGroup from '../models/platform';
 
 export default class Boot extends Phaser.State {
   preload() {
     game.load.image('sky', 'assets/sky.png');
     game.load.image('platform', 'assets/platform.png');
+    game.load.image('diamond', 'assets/diamond.png');
     game.load.image('star', 'assets/star.png');
     game.load.spritesheet('dude', 'assets/dude.png', 32, 48);
   }
@@ -22,9 +23,9 @@ export default class Boot extends Phaser.State {
       x: 32,
       y: game.world.height - 150,
     });
-    this.platforms = game.add.group();
-    this.platforms.enableBody = true;
-    this.floor = new Platform(game, {x: game.world.height - 120, y: 0});
+    this.platforms = new PlatformGroup(game, {});
+    this.platforms.create(100, 100, 'diamond');
+    this.floor = new PlatformGroup(game, {x: game.world.height - 120, y: 0});
     this.game.add.existing(this.player);
     this.game.camera.follow(this.player);
     this.cursors = game.input.keyboard.createCursorKeys();
