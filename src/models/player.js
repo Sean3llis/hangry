@@ -32,8 +32,20 @@ export default class Player extends Phaser.Sprite {
   }
 
   stop() {
+    var vx = this.body.velocity.x;
+    console.log(this.body.velocity.x);
     this.animations.stop();
     this.frame = 4;
-    this.body.velocity.x = 0;
+    // this.body.velocity.x = 0;
+    // if (Math.abs(this.body.velocity.x) > 0) {
+    //   this.body.velocity.x = this.body.velocity.x / 2;
+    // }
+    if (this.body.velocity.x > 0) {
+      this.body.velocity.x -= 10;
+      if (this.body.velocity.x <= 10) this.body.velocity.x = 0;
+    } else {
+      this.body.velocity.x += 10;
+      if (this.body.velocity.x >= -10) this.body.velocity.x = 0;
+    }
   }
 }
