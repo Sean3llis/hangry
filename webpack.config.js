@@ -24,6 +24,7 @@ module.exports = {
       { test: /p2\.js/, loader: 'expose?p2' }
     ]
   },
+  cache: true,
   devtool: 'source-map',
   resolve: {
     alias: {

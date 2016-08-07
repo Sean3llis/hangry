@@ -75,13 +75,10 @@ var Hangry =
 	var Hangry = function (_Phaser$Game) {
 	  _inherits(Hangry, _Phaser$Game);
 	
-	  function Hangry() {
+	  function Hangry(w, h) {
 	    _classCallCheck(this, Hangry);
 	
-	    var width = document.documentElement.clientWidth > 768 ? 768 : document.documentElement.clientWidth;
-	    var height = document.documentElement.clientHeight > 1024 ? 1024 : document.documentElement.clientHeight;
-	
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Hangry).call(this, width, height, _phaser2.default.AUTO, 'mount', null));
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Hangry).call(this, w, h, _phaser2.default.AUTO, 'mount', null));
 	
 	    _this.state.add('Boot', _state2.default, false);
 	    _this.state.start('Boot');
@@ -91,7 +88,7 @@ var Hangry =
 	  return Hangry;
 	}(_phaser2.default.Game);
 	
-	window.game = new Hangry();
+	window.game = new Hangry(800, 400);
 
 /***/ },
 /* 1 */
@@ -103109,6 +103106,10 @@ var Hangry =
 	
 	var _player2 = _interopRequireDefault(_player);
 	
+	var _platform = __webpack_require__(10);
+	
+	var _platform2 = _interopRequireDefault(_platform);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -103116,6 +103117,10 @@ var Hangry =
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	/**
+	 * Models:
+	 */
+	
 	
 	var Boot = function (_Phaser$State) {
 	  _inherits(Boot, _Phaser$State);
@@ -103130,7 +103135,7 @@ var Hangry =
 	    key: 'preload',
 	    value: function preload() {
 	      game.load.image('sky', 'assets/sky.png');
-	      game.load.image('ground', 'assets/platform.png');
+	      game.load.image('platform', 'assets/platform.png');
 	      game.load.image('star', 'assets/star.png');
 	      game.load.spritesheet('dude', 'assets/dude.png', 32, 48);
 	    }
@@ -103139,38 +103144,18 @@ var Hangry =
 	    value: function create() {
 	      var game = this.game;
 	      game.physics.startSystem(_phaser2.default.Physics.ARCADE);
-	      game.add.sprite(0, 0, 'star');
-	      this.platforms = game.add.group();
-	      this.platforms.enableBody = true;
-	      this.ground = this.makePlatform(0, game.world.height - 64, 'ground');
-	      this.ground.scale.setTo(2, 2);
-	      this.makePlatform(400, 400, 'ground');
-	      this.makePlatform(-150, 250, 'ground');
 	      this.player = new _player2.default(game, {
 	        bounce: 0.2,
 	        gravity: 800,
 	        x: 32,
-	        y: game.world.height - 150,
-	        asset: 'dude'
+	        y: game.world.height - 150
 	      });
+	      this.platforms = game.add.group();
+	      this.platforms.enableBody = true;
+	      this.floor = new _platform2.default(game, { x: game.world.height - 120, y: 0 });
 	      this.game.add.existing(this.player);
+	      this.game.camera.follow(this.player);
 	      this.cursors = game.input.keyboard.createCursorKeys();
-	    }
-	  }, {
-	    key: 'makePlatform',
-	    value: function makePlatform(x, y, asset) {
-	      var platform = this.platforms.create(x, y, asset);
-	      platform.body.immovable = true;
-	      return platform;
-	    }
-	  }, {
-	    key: 'makePlayer',
-	    value: function makePlayer(bounce, gravity) {
-	      var game = this.game;
-	      var player = this.player = game.add.sprite(32, game.world.height - 150, 'dude');
-	      player.body.bounce.y = bounce;
-	      player.body.gravity.y = gravity;
-	      player.body.collideWorldBounds = true;
 	    }
 	  }, {
 	    key: 'update',
@@ -103192,7 +103177,7 @@ var Hangry =
 	      } else {
 	        player.stop();
 	      }
-	      if (cursors.up.isDown) player.body.velocity.y = -350;
+	      if (cursors.up.isDown && player.body.touching.down) player.jump();
 	    }
 	  }, {
 	    key: 'render',
@@ -103236,21 +103221,21 @@ var Hangry =
 	
 	    _classCallCheck(this, Player);
 	
-	    var player = (_this = _possibleConstructorReturn(this, Object.getPrototypeOf(Player).call(this, game, config.x, config.y, config.asset)), _this);
-	    player.game.physics.arcade.enable(player);
+	    var player = (_this = _possibleConstructorReturn(this, Object.getPrototypeOf(Player).call(this, game, config.x, config.y, 'dude')), _this);
+	    game.physics.arcade.enable(player);
+	    player.body.collidWorldBounds = true;
 	    player.anchor.setTo(0.5);
 	    player.body.bounce.y = config.bounce;
 	    player.body.gravity.y = config.gravity;
-	    player.collidWorldBounds = true;
 	    player.animations.add('left', [0, 1, 2, 3], 10, true);
 	    player.animations.add('right', [5, 6, 7, 8], 10, true);
+	    player.body.collideWorldBounds = true;
 	    return _ret = player, _possibleConstructorReturn(_this, _ret);
 	  }
 	
 	  _createClass(Player, [{
 	    key: 'runLeft',
 	    value: function runLeft() {
-	      console.log('run left');
 	      this.animations.play('left');
 	      if (this.body.velocity.x >= -200) {
 	        this.body.velocity.x -= 10;
@@ -103259,11 +103244,15 @@ var Hangry =
 	  }, {
 	    key: 'runRight',
 	    value: function runRight() {
-	      console.log('run right');
 	      this.animations.play('right');
 	      if (this.body.velocity.x <= 200) {
 	        this.body.velocity.x += 10;
 	      }
+	    }
+	  }, {
+	    key: 'jump',
+	    value: function jump() {
+	      this.body.velocity.y = -400;
 	    }
 	  }, {
 	    key: 'stop',
@@ -103278,6 +103267,59 @@ var Hangry =
 	}(_phaser2.default.Sprite);
 	
 	exports.default = Player;
+
+/***/ },
+/* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _phaser = __webpack_require__(5);
+	
+	var _phaser2 = _interopRequireDefault(_phaser);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var Platform = function (_Phaser$Group) {
+	  _inherits(Platform, _Phaser$Group);
+	
+	  // (game, parent, name, addToStage, enableBody, physicsBodyType)
+	  function Platform(game, config) {
+	    var _this;
+	
+	    _classCallCheck(this, Platform);
+	
+	    config.name = config.name || 'platform';
+	    config.addToStage = config.addToStage || true;
+	    config.enableBody = config.enableBody || true;
+	    config.physicsBodyType = config.physicsBodyType || _phaser2.default.Physics.ARCADE;
+	    var platform = (_this = _possibleConstructorReturn(this, Object.getPrototypeOf(Platform).call(this, game, config.x, config.y, 'platform')), _this);
+	    console.log('platform ~~>', platform);
+	    platform.enableBody = true;
+	    return _this;
+	  }
+	
+	  return Platform;
+	}(_phaser2.default.Group);
+	
+	// makePlatform(x, y, asset) {
+	//   let platform = this.platforms.create(x,y,asset);
+	//   platform.body.immovable = true;
+	//   return platform;
+	// }
+	
+	
+	exports.default = Platform;
 
 /***/ }
 /******/ ]);
