@@ -103304,7 +103304,6 @@ var Hangry =
 	    config.enableBody = config.enableBody || true;
 	    config.physicsBodyType = config.physicsBodyType || _phaser2.default.Physics.ARCADE;
 	    var platform = (_this = _possibleConstructorReturn(this, Object.getPrototypeOf(Platform).call(this, game, config.x, config.y, 'platform')), _this);
-	    console.log('platform ~~>', platform);
 	    platform.enableBody = true;
 	    return _this;
 	  }
