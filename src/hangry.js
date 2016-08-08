@@ -10,10 +10,8 @@ import Boot from './states/state.boot';
 class Hangry extends Phaser.Game {
   constructor(w, h) {
     let game = super(w, h, Phaser.AUTO, 'mount', null);
-    console.log('game ~~>', game);
     game.state.add('Boot', Boot, false);
     game.state.start('Boot');
-    // game.stage.backgroundColor = "#4488AA";
   }
 }
 

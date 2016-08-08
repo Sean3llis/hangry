@@ -20,7 +20,7 @@ export default class Boot extends Phaser.State {
     game.stage.backgroundColor = '#4488AA';
     game.physics.startSystem(Phaser.Physics.ARCADE);
     this.player = new Player(game, {
-      bounce: 0.2,
+      bounce: 0.3,
       gravity: 800,
       x: 32,
       y: game.world.height - 150,
@@ -29,19 +29,24 @@ export default class Boot extends Phaser.State {
     this.beers = game.add.group();
     for (var i = 0; i < 16; i++) {
        let beer = this.beers.create(360 + Math.random() * 200, 120 + Math.random() * 200, 'pbr');
-       beer.angle = 90;
        beer.scale.setTo(0.1);
+       beer.anchor.setTo(0.5, 0.5);
     }
     this.floor = this.platforms.create(0, game.world.height - 20, 'platform');
     this.floor.body.immovable = true;
     this.floor.scale.setTo(3, 1);
     this.game.add.existing(this.player);
     this.cursors = game.input.keyboard.createCursorKeys();
+    console.log('this.beers ~~>', this.beers);
   }
 
   update() {
     let game = this.game;
     let player = this.player;
+    for (var i = 0; i < this.beers.children.length; i++) {
+      let beer = this.beers.children[i];
+      beer.rotation += 0.05;
+    }
     game.physics.arcade.collide(player, this.platforms);
     this.handlePlayerMovement(player);
   }

@@ -81,10 +81,8 @@ var Hangry =
 	    _classCallCheck(this, Hangry);
 	
 	    var game = (_this = _possibleConstructorReturn(this, Object.getPrototypeOf(Hangry).call(this, w, h, _phaser2.default.AUTO, 'mount', null)), _this);
-	    console.log('game ~~>', game);
 	    game.state.add('Boot', _state2.default, false);
 	    game.state.start('Boot');
-	    // game.stage.backgroundColor = "#4488AA";
 	    return _this;
 	  }
 	
@@ -103153,7 +103151,7 @@ var Hangry =
 	      game.stage.backgroundColor = '#4488AA';
 	      game.physics.startSystem(_phaser2.default.Physics.ARCADE);
 	      this.player = new _player2.default(game, {
-	        bounce: 0.2,
+	        bounce: 0.3,
 	        gravity: 800,
 	        x: 32,
 	        y: game.world.height - 150
@@ -103162,20 +103160,25 @@ var Hangry =
 	      this.beers = game.add.group();
 	      for (var i = 0; i < 16; i++) {
 	        var beer = this.beers.create(360 + Math.random() * 200, 120 + Math.random() * 200, 'pbr');
-	        beer.angle = 90;
 	        beer.scale.setTo(0.1);
+	        beer.anchor.setTo(0.5, 0.5);
 	      }
 	      this.floor = this.platforms.create(0, game.world.height - 20, 'platform');
 	      this.floor.body.immovable = true;
 	      this.floor.scale.setTo(3, 1);
 	      this.game.add.existing(this.player);
 	      this.cursors = game.input.keyboard.createCursorKeys();
+	      console.log('this.beers ~~>', this.beers);
 	    }
 	  }, {
 	    key: 'update',
 	    value: function update() {
 	      var game = this.game;
 	      var player = this.player;
+	      for (var i = 0; i < this.beers.children.length; i++) {
+	        var beer = this.beers.children[i];
+	        beer.rotation += 0.05;
+	      }
 	      game.physics.arcade.collide(player, this.platforms);
 	      this.handlePlayerMovement(player);
 	    }
