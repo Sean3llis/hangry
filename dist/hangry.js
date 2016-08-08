@@ -76,12 +76,15 @@ var Hangry =
 	  _inherits(Hangry, _Phaser$Game);
 	
 	  function Hangry(w, h) {
+	    var _this;
+	
 	    _classCallCheck(this, Hangry);
 	
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Hangry).call(this, w, h, _phaser2.default.AUTO, 'mount', null));
-	
-	    _this.state.add('Boot', _state2.default, false);
-	    _this.state.start('Boot');
+	    var game = (_this = _possibleConstructorReturn(this, Object.getPrototypeOf(Hangry).call(this, w, h, _phaser2.default.AUTO, 'mount', null)), _this);
+	    console.log('game ~~>', game);
+	    game.state.add('Boot', _state2.default, false);
+	    game.state.start('Boot');
+	    // game.stage.backgroundColor = "#4488AA";
 	    return _this;
 	  }
 	
@@ -89,6 +92,8 @@ var Hangry =
 	}(_phaser2.default.Game);
 	
 	window.game = new Hangry(800, 400);
+	
+	console.log('window.game ~~>', window.game);
 
 /***/ },
 /* 1 */
@@ -103138,12 +103143,14 @@ var Hangry =
 	      game.load.image('platform', 'assets/platform.png');
 	      game.load.image('diamond', 'assets/diamond.png');
 	      game.load.image('star', 'assets/star.png');
+	      game.load.image('pbr', 'assets/pbr.png');
 	      game.load.spritesheet('dude', 'assets/dude.png', 32, 48);
 	    }
 	  }, {
 	    key: 'create',
 	    value: function create() {
 	      var game = this.game;
+	      game.stage.backgroundColor = '#4488AA';
 	      game.physics.startSystem(_phaser2.default.Physics.ARCADE);
 	      this.player = new _player2.default(game, {
 	        bounce: 0.2,
@@ -103152,10 +103159,16 @@ var Hangry =
 	        y: game.world.height - 150
 	      });
 	      this.platforms = new _platform2.default(game, {});
-	      this.platforms.create(100, 100, 'diamond');
-	      this.floor = new _platform2.default(game, { x: game.world.height - 120, y: 0 });
+	      this.beers = game.add.group();
+	      for (var i = 0; i < 16; i++) {
+	        var beer = this.beers.create(360 + Math.random() * 200, 120 + Math.random() * 200, 'pbr');
+	        beer.angle = 90;
+	        beer.scale.setTo(0.1);
+	      }
+	      this.floor = this.platforms.create(0, game.world.height - 20, 'platform');
+	      this.floor.body.immovable = true;
+	      this.floor.scale.setTo(3, 1);
 	      this.game.add.existing(this.player);
-	      this.game.camera.follow(this.player);
 	      this.cursors = game.input.keyboard.createCursorKeys();
 	    }
 	  }, {
@@ -103168,9 +103181,8 @@ var Hangry =
 	    }
 	  }, {
 	    key: 'handlePlayerMovement',
-	    value: function handlePlayerMovement() {
+	    value: function handlePlayerMovement(player) {
 	      var cursors = this.cursors;
-	      var player = this.player;
 	      if (cursors.left.isDown) {
 	        player.runLeft();
 	      } else if (cursors.right.isDown) {
@@ -103231,6 +103243,12 @@ var Hangry =
 	    player.animations.add('left', [0, 1, 2, 3], 10, true);
 	    player.animations.add('right', [5, 6, 7, 8], 10, true);
 	    player.body.collideWorldBounds = true;
+	    /**
+	     * Player Settings:
+	     */
+	    _this.maxVelocity = 250;
+	    _this.acceleration = 15;
+	    _this.madUps = 300;
 	    return _ret = player, _possibleConstructorReturn(_this, _ret);
 	  }
 	
@@ -103238,40 +103256,42 @@ var Hangry =
 	    key: 'runLeft',
 	    value: function runLeft() {
 	      this.animations.play('left');
-	      if (this.body.velocity.x >= -200) {
-	        this.body.velocity.x -= 10;
+	      if (this.body.velocity.x >= this.maxVelocity * -1) {
+	        this.body.velocity.x -= this.acceleration;
 	      }
 	    }
 	  }, {
 	    key: 'runRight',
 	    value: function runRight() {
 	      this.animations.play('right');
-	      if (this.body.velocity.x <= 200) {
-	        this.body.velocity.x += 10;
+	      if (this.body.velocity.x <= this.maxVelocity) {
+	        this.body.velocity.x += this.acceleration;
 	      }
 	    }
 	  }, {
 	    key: 'jump',
 	    value: function jump() {
-	      this.body.velocity.y = -400;
+	      this.body.velocity.y = this.madUps * -1;
 	    }
 	  }, {
 	    key: 'stop',
 	    value: function stop() {
 	      var vx = this.body.velocity.x;
-	      console.log(this.body.velocity.x);
-	      this.animations.stop();
-	      this.frame = 4;
-	      // this.body.velocity.x = 0;
-	      // if (Math.abs(this.body.velocity.x) > 0) {
-	      //   this.body.velocity.x = this.body.velocity.x / 2;
-	      // }
 	      if (this.body.velocity.x > 0) {
+	        this.animations.play('right');
 	        this.body.velocity.x -= 10;
-	        if (this.body.velocity.x <= 10) this.body.velocity.x = 0;
+	        if (this.body.velocity.x <= 10) {
+	          this.body.velocity.x = 0;
+	          this.animations.stop();
+	        }
 	      } else {
 	        this.body.velocity.x += 10;
-	        if (this.body.velocity.x >= -10) this.body.velocity.x = 0;
+	        this.animations.play('left');
+	        if (this.body.velocity.x >= -10) {
+	          this.body.velocity.x = 0;
+	          this.frame = 4;
+	          this.animations.stop();
+	        }
 	      }
 	    }
 	  }]);

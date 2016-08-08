@@ -11,11 +11,13 @@ export default class Boot extends Phaser.State {
     game.load.image('platform', 'assets/platform.png');
     game.load.image('diamond', 'assets/diamond.png');
     game.load.image('star', 'assets/star.png');
+    game.load.image('pbr', 'assets/pbr.png');
     game.load.spritesheet('dude', 'assets/dude.png', 32, 48);
   }
 
   create() {
     let game = this.game;
+    game.stage.backgroundColor = '#4488AA';
     game.physics.startSystem(Phaser.Physics.ARCADE);
     this.player = new Player(game, {
       bounce: 0.2,
@@ -24,10 +26,16 @@ export default class Boot extends Phaser.State {
       y: game.world.height - 150,
     });
     this.platforms = new PlatformGroup(game, {});
-    this.platforms.create(100, 100, 'diamond');
-    this.floor = new PlatformGroup(game, {x: game.world.height - 120, y: 0});
+    this.beers = game.add.group();
+    for (var i = 0; i < 16; i++) {
+       let beer = this.beers.create(360 + Math.random() * 200, 120 + Math.random() * 200, 'pbr');
+       beer.angle = 90;
+       beer.scale.setTo(0.1);
+    }
+    this.floor = this.platforms.create(0, game.world.height - 20, 'platform');
+    this.floor.body.immovable = true;
+    this.floor.scale.setTo(3, 1);
     this.game.add.existing(this.player);
-    this.game.camera.follow(this.player);
     this.cursors = game.input.keyboard.createCursorKeys();
   }
 
@@ -38,9 +46,8 @@ export default class Boot extends Phaser.State {
     this.handlePlayerMovement(player);
   }
 
-  handlePlayerMovement() {
+  handlePlayerMovement(player) {
     let cursors = this.cursors;
-    let player = this.player;
     if (cursors.left.isDown) {
       player.runLeft();
     } else if (cursors.right.isDown) {
