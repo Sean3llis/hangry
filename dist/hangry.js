@@ -103160,7 +103160,7 @@ var Hangry =
 	      this.beers = game.add.group();
 	      for (var i = 0; i < 16; i++) {
 	        var beer = this.beers.create(360 + Math.random() * 200, 120 + Math.random() * 200, 'pbr');
-	        beer.scale.setTo(0.1);
+	        beer.scale.setTo(0.08);
 	        beer.anchor.setTo(0.5, 0.5);
 	      }
 	      this.floor = this.platforms.create(0, game.world.height - 20, 'platform');
@@ -103168,7 +103168,12 @@ var Hangry =
 	      this.floor.scale.setTo(3, 1);
 	      this.game.add.existing(this.player);
 	      this.cursors = game.input.keyboard.createCursorKeys();
-	      console.log('this.beers ~~>', this.beers);
+	      console.log('Phaser.keyboard ~~>', _phaser2.default.Keyboard);
+	      this.aKey = game.input.keyboard.addKey(65);
+	      this.aKey.onDown.add(function () {
+	        console.log('A pressed!');
+	      }, this);
+	      console.log('aKey ~~>', aKey);
 	    }
 	  }, {
 	    key: 'update',
@@ -103177,7 +103182,7 @@ var Hangry =
 	      var player = this.player;
 	      for (var i = 0; i < this.beers.children.length; i++) {
 	        var beer = this.beers.children[i];
-	        beer.rotation += 0.05;
+	        beer.rotation += 0.1;
 	      }
 	      game.physics.arcade.collide(player, this.platforms);
 	      this.handlePlayerMovement(player);
