@@ -37,12 +37,8 @@ export default class Boot extends Phaser.State {
     this.floor.scale.setTo(3, 1);
     this.game.add.existing(this.player);
     this.cursors = game.input.keyboard.createCursorKeys();
-    console.log('Phaser.keyboard ~~>', Phaser.Keyboard);
     this.aKey = game.input.keyboard.addKey(65);
-    this.aKey.onDown.add(function() {
-      console.log('A pressed!');
-    }, this);
-    console.log('aKey ~~>', aKey);
+    this.aKey.onDown.add(this.player.throwPbr, this);
   }
 
   update() {
@@ -53,6 +49,7 @@ export default class Boot extends Phaser.State {
       beer.rotation += 0.1;
     }
     game.physics.arcade.collide(player, this.platforms);
+    game.physics.arcade.collide(this.beers, this.platforms);
     this.handlePlayerMovement(player);
   }
 

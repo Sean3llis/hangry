@@ -57,4 +57,24 @@ export default class Player extends Phaser.Sprite {
       }
     }
   }
+
+  throwPbr() {
+    let player = this.player;
+    let beer = this.beers.create(player.x + 10, player.y - 10, 'pbr');
+    if (beer) {
+      this.game.physics.arcade.enable(beer);
+      beer.body.gravity.y = 800;
+      beer.body.velocity.x = 400;
+      beer.body.velocity.y = -400;
+      beer.body.bounce = 0.2;
+      beer.scale.setTo(0.08);
+      beer.anchor.setTo(0.5, 0.5);
+      beer.checkWorldBounds = true;
+      beer.events.onOutOfBounds.add(function(beer) {
+        console.log('destroy beer', beer);
+        beer.destroy();
+      }, this);
+    }
+    console.log('beer ~~>', beer);
+  }
 }
