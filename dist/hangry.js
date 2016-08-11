@@ -103141,7 +103141,7 @@ var Hangry =
 	      game.load.image('platform', 'assets/platform.png');
 	      game.load.image('diamond', 'assets/diamond.png');
 	      game.load.image('star', 'assets/star.png');
-	      game.load.image('pbr', 'assets/coffee.png');
+	      game.load.image('pbr', 'assets/pbr.png');
 	      game.load.spritesheet('dude', 'assets/dude.png', 32, 48);
 	    }
 	  }, {
@@ -103168,8 +103168,12 @@ var Hangry =
 	      this.floor.scale.setTo(3, 1);
 	      this.game.add.existing(this.player);
 	      this.cursors = game.input.keyboard.createCursorKeys();
+	      this.spaceKey = game.input.keyboard.addKey(_phaser2.default.Keyboard.SPACEBAR);
 	      this.aKey = game.input.keyboard.addKey(65);
 	      this.aKey.onDown.add(this.player.throwPbr, this);
+	      this.handleCycleWeapon = debounce(this.cycleWeapon, 50, true);
+	      var style = { font: "bold 32px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" };
+	      game.add.text(100, 100, 'WEAPON:', style);
 	    }
 	  }, {
 	    key: 'update',
@@ -103195,7 +103199,18 @@ var Hangry =
 	      } else {
 	        player.stop();
 	      }
-	      if (cursors.up.isDown && player.body.touching.down) player.jump();
+	
+	      if (this.spaceKey.isDown && player.body.touching.down) player.jump();
+	      if (cursors.up.isDown) {
+	        this.handleCycleWeapon('UP');
+	      } else if (cursors.down.isDown) {
+	        this.handleCycleWeapon('DOWN');
+	      }
+	    }
+	  }, {
+	    key: 'cycleWeapon',
+	    value: function cycleWeapon(direction) {
+	      console.log('cycle weapon ~~> ' + direction);
 	    }
 	  }, {
 	    key: 'render',
@@ -103206,6 +103221,23 @@ var Hangry =
 	}(_phaser2.default.State);
 	
 	exports.default = Boot;
+	
+	
+	function debounce(func, wait, immediate) {
+	  var timeout;
+	  return function () {
+	    var context = this;
+	    var args = arguments;
+	    var later = function later() {
+	      timeout = null;
+	      if (!immediate) func.apply(context, args);
+	    };
+	    var callNow = immediate && !timeout;
+	    clearTimeout(timeout);
+	    timeout = setTimeout(later, wait);
+	    if (callNow) func.apply(context, args);
+	  };
+	}
 
 /***/ },
 /* 9 */
@@ -103251,6 +103283,7 @@ var Hangry =
 	    /**
 	     * Player Settings:
 	     */
+	    _this.currentWeapon = 'PBR';
 	    _this.maxVelocity = 250;
 	    _this.acceleration = 15;
 	    _this.madUps = 300;

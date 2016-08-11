@@ -14,6 +14,7 @@ export default class Player extends Phaser.Sprite {
     /**
      * Player Settings:
      */
+    this.currentWeapon = 'PBR';
     this.maxVelocity = 250;
     this.acceleration = 15;
     this.madUps = 300;
