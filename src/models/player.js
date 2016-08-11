@@ -2,8 +2,11 @@ import Phaser from 'phaser';
 
 export default class Player extends Phaser.Sprite {
   constructor (game, config) {
-    let player = super(game, config.x, config.y, 'dude');
+    let player = super(game, config.x, config.y, 'DUDE');
     game.physics.arcade.enable(player);
+    /**
+     * Phaser Config:
+     */
     player.body.collidWorldBounds = true;
     player.anchor.setTo(0.5);
     player.body.bounce.y = config.bounce;
@@ -11,18 +14,22 @@ export default class Player extends Phaser.Sprite {
     player.animations.add('left', [0, 1, 2, 3], 10, true);
     player.animations.add('right', [5, 6, 7, 8], 10, true);
     player.body.collideWorldBounds = true;
+    player.weapons = game.add.group();
     /**
      * Player Settings:
      */
     this.currentWeapon = 'PBR';
+    this.facing = 'STRAIGHT';
     this.maxVelocity = 250;
     this.acceleration = 15;
     this.madUps = 300;
+    this.weapons = game.add.group();
     return player;
   }
 
   runLeft() {
     this.animations.play('left');
+    this.facing = 'LEFT';
     if (this.body.velocity.x >= this.maxVelocity * -1) {
       this.body.velocity.x -= this.acceleration;
     }
@@ -30,6 +37,7 @@ export default class Player extends Phaser.Sprite {
 
   runRight() {
     this.animations.play('right');
+    this.facing = 'RIGHT';
     if (this.body.velocity.x <= this.maxVelocity) {
       this.body.velocity.x += this.acceleration;
     }
@@ -59,13 +67,16 @@ export default class Player extends Phaser.Sprite {
     }
   }
 
-  throwPbr() {
-    let player = this.player;
-    let beer = this.beers.create(player.x + 10, player.y - 10, 'pbr');
+  throw() {
+    let player = this;
+    let weaponType = player.currentWeapon;
+    let beer = player.weapons.create(player.x + 10, player.y - 10, weaponType);
     if (beer) {
       this.game.physics.arcade.enable(beer);
       beer.body.gravity.y = 800;
-      beer.body.velocity.x = 400;
+      beer.body.velocity.x = (player.facing === 'LEFT')
+        ? -400
+        : 400;
       beer.body.velocity.y = -400;
       beer.body.bounce = 0.2;
       beer.scale.setTo(0.08);

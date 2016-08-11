@@ -7,12 +7,13 @@ import PlatformGroup from '../models/platform';
 
 export default class Boot extends Phaser.State {
   preload() {
-    game.load.image('sky', 'assets/sky.png');
-    game.load.image('platform', 'assets/platform.png');
-    game.load.image('diamond', 'assets/diamond.png');
-    game.load.image('star', 'assets/star.png');
-    game.load.image('pbr', 'assets/pbr.png');
-    game.load.spritesheet('dude', 'assets/dude.png', 32, 48);
+    game.load.image('SKY', 'assets/sky.png');
+    game.load.image('PLATFORM', 'assets/platform.png');
+    game.load.image('DIAMOND', 'assets/diamond.png');
+    game.load.image('STAR', 'assets/star.png');
+    game.load.image('PBR', 'assets/pbr.png');
+    game.load.image('COLD_BREW', 'assets/coffee.png');
+    game.load.spritesheet('DUDE', 'assets/dude.png', 32, 48);
   }
 
   create() {
@@ -26,32 +27,23 @@ export default class Boot extends Phaser.State {
       y: game.world.height - 150,
     });
     this.platforms = new PlatformGroup(game, {});
-    this.beers = game.add.group();
-    for (var i = 0; i < 16; i++) {
-       let beer = this.beers.create(360 + Math.random() * 200, 120 + Math.random() * 200, 'pbr');
-       beer.scale.setTo(0.08);
-       beer.anchor.setTo(0.5, 0.5);
-    }
-    this.floor = this.platforms.create(0, game.world.height - 20, 'platform');
+    this.floor = this.platforms.create(0, game.world.height - 20, 'PLATFORM');
     this.floor.body.immovable = true;
     this.floor.scale.setTo(3, 1);
     this.game.add.existing(this.player);
     this.cursors = game.input.keyboard.createCursorKeys();
     this.spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     this.aKey = game.input.keyboard.addKey(65);
-    this.aKey.onDown.add(this.player.throwPbr, this);
+    this.aKey.onDown.add(this.player.throw, this.player);
     this.handleCycleWeapon = debounce(this.cycleWeapon, 50, true);
-    var style = { font: "bold 32px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" };
-    game.add.text(100, 100, 'WEAPON:', style);
+    var style = { font: "bold 16px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" };
+    this.weaponLabel = game.add.text(18, 18, 'WEAPON:', style);
+    this.weaponSprite = game.add.sprite(200, 18, 'STAR');
   }
 
   update() {
     let game = this.game;
     let player = this.player;
-    for (var i = 0; i < this.beers.children.length; i++) {
-      let beer = this.beers.children[i];
-      beer.rotation += 0.1;
-    }
     game.physics.arcade.collide(player, this.platforms);
     game.physics.arcade.collide(this.beers, this.platforms);
     this.handlePlayerMovement(player);
