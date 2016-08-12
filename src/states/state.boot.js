@@ -13,6 +13,7 @@ export default class Boot extends Phaser.State {
     game.load.image('STAR', 'assets/star.png');
     game.load.image('PBR', 'assets/pbr.png');
     game.load.image('COLD_BREW', 'assets/coffee.png');
+    game.load.image('MIMOSA', 'assets/mimosa.png');
     game.load.spritesheet('DUDE', 'assets/dude.png', 32, 48);
   }
 
@@ -35,7 +36,7 @@ export default class Boot extends Phaser.State {
     this.spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     this.aKey = game.input.keyboard.addKey(65);
     this.aKey.onDown.add(this.player.throw, this.player);
-    this.handleCycleWeapon = debounce(this.cycleWeapon, 50, true);
+    this.handleCycleWeapon = debounce(this.player.cycleWeapon, 50, true);
     var style = { font: "bold 16px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" };
     this.weaponLabel = game.add.text(18, 18, 'WEAPON:', style);
     this.weaponSprite = game.add.sprite(200, 18, 'STAR');
@@ -66,11 +67,6 @@ export default class Boot extends Phaser.State {
       this.handleCycleWeapon('DOWN');
     }
   }
-
-  cycleWeapon(direction) {
-    console.log(`cycle weapon ~~> ${direction}`);
-  }
-
 
   render() {
   }

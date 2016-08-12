@@ -103143,6 +103143,7 @@ var Hangry =
 	      game.load.image('STAR', 'assets/star.png');
 	      game.load.image('PBR', 'assets/pbr.png');
 	      game.load.image('COLD_BREW', 'assets/coffee.png');
+	      game.load.image('MIMOSA', 'assets/mimosa.png');
 	      game.load.spritesheet('DUDE', 'assets/dude.png', 32, 48);
 	    }
 	  }, {
@@ -103166,7 +103167,7 @@ var Hangry =
 	      this.spaceKey = game.input.keyboard.addKey(_phaser2.default.Keyboard.SPACEBAR);
 	      this.aKey = game.input.keyboard.addKey(65);
 	      this.aKey.onDown.add(this.player.throw, this.player);
-	      this.handleCycleWeapon = debounce(this.cycleWeapon, 50, true);
+	      this.handleCycleWeapon = debounce(this.player.cycleWeapon, 50, true);
 	      var style = { font: "bold 16px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" };
 	      this.weaponLabel = game.add.text(18, 18, 'WEAPON:', style);
 	      this.weaponSprite = game.add.sprite(200, 18, 'STAR');
@@ -103198,11 +103199,6 @@ var Hangry =
 	      } else if (cursors.down.isDown) {
 	        this.handleCycleWeapon('DOWN');
 	      }
-	    }
-	  }, {
-	    key: 'cycleWeapon',
-	    value: function cycleWeapon(direction) {
-	      console.log('cycle weapon ~~> ' + direction);
 	    }
 	  }, {
 	    key: 'render',
@@ -103279,7 +103275,9 @@ var Hangry =
 	    /**
 	     * Player Settings:
 	     */
+	    _this.weaponTypes = ['DIAMOND', 'STAR', 'PBR', 'COLD_BREW', 'MIMOSA'];
 	    _this.currentWeapon = 'PBR';
+	    _this.weaponIndex = 0;
 	    _this.facing = 'STRAIGHT';
 	    _this.maxVelocity = 250;
 	    _this.acceleration = 15;
@@ -103289,6 +103287,26 @@ var Hangry =
 	  }
 	
 	  _createClass(Player, [{
+	    key: 'cycleWeapon',
+	    value: function cycleWeapon(direction) {
+	      var player = this.player;
+	      var weaponTypes = player.weaponTypes;
+	      var currentWeapon = player.currentWeapon;
+	      switch (direction) {
+	        case 'UP':
+	          player.weaponIndex++;
+	          if (player.weaponIndex > player.weaponTypes.length - 1) player.weaponIndex = 0;
+	          currentWeapon = weaponTypes[player.weaponIndex];
+	          break;
+	        case 'DOWN':
+	          player.weaponIndex--;
+	          if (player.weaponIndex < 0) player.weaponIndex = player.weaponTypes.length - 1;
+	          currentWeapon = weaponTypes[player.weaponIndex];
+	          break;
+	      }
+	      console.log('currentWeapon ~~>', currentWeapon);
+	    }
+	  }, {
 	    key: 'runLeft',
 	    value: function runLeft() {
 	      this.animations.play('left');

@@ -18,13 +18,34 @@ export default class Player extends Phaser.Sprite {
     /**
      * Player Settings:
      */
+    this.weaponTypes = ['DIAMOND', 'STAR', 'PBR', 'COLD_BREW', 'MIMOSA'];
     this.currentWeapon = 'PBR';
+    this.weaponIndex = 0;
     this.facing = 'STRAIGHT';
     this.maxVelocity = 250;
     this.acceleration = 15;
     this.madUps = 300;
     this.weapons = game.add.group();
     return player;
+  }
+
+  cycleWeapon(direction) {
+    let player = this.player;
+    let weaponTypes = player.weaponTypes;
+    let currentWeapon = player.currentWeapon;
+    switch (direction) {
+      case 'UP':
+        player.weaponIndex++;
+        if (player.weaponIndex > player.weaponTypes.length - 1) player.weaponIndex = 0;
+        currentWeapon = weaponTypes[player.weaponIndex];
+        break;
+      case 'DOWN':
+        player.weaponIndex--;
+        if (player.weaponIndex < 0) player.weaponIndex = player.weaponTypes.length - 1;
+        currentWeapon = weaponTypes[player.weaponIndex];
+        break;
+    }
+    console.log('currentWeapon ~~>', currentWeapon);
   }
 
   runLeft() {
