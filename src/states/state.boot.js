@@ -15,6 +15,7 @@ export default class Boot extends Phaser.State {
     game.load.image('COLD_BREW', 'assets/coffee.png');
     game.load.image('MIMOSA', 'assets/mimosa.png');
     game.load.spritesheet('DUDE', 'assets/dude.png', 32, 48);
+    game.load.spritesheet('BADDIE', 'assets/baddie.png', 32, 32);
   }
 
   create() {
@@ -27,6 +28,10 @@ export default class Boot extends Phaser.State {
       x: 32,
       y: game.world.height - 150,
     });
+    this.baddie = game.add.sprite(100, 100, 'BADDIE');
+    this.baddie.animations.add('left', [0, 1], 4, true);
+    this.baddie.animations.add('right', [2,3], 10, true);
+    this.baddie.animations.play('left');
     this.platforms = new PlatformGroup(game, {});
     this.floor = this.platforms.create(0, game.world.height - 20, 'PLATFORM');
     this.floor.body.immovable = true;
