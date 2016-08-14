@@ -1,23 +1,31 @@
 import Phaser from 'phaser';
 
+import { spriteKiller } from 'utils';
+
 export default class Player extends Phaser.Sprite {
   constructor (game, config) {
     let player = super(game, config.x, config.y, 'DUDE');
     game.physics.arcade.enable(player);
     /**
-     * Phaser Config:
+     * Physics:
      */
-    player.body.collidWorldBounds = true;
+    player.body.collideWorldBounds = true;
     player.anchor.setTo(0.5);
     player.body.bounce.y = config.bounce;
     player.body.gravity.y = config.gravity;
+    player.body.collideWorldBounds = true;
+    /**
+     * Animations
+     */
     player.animations.add('left', [0, 1, 2, 3], 10, true);
     player.animations.add('right', [5, 6, 7, 8], 10, true);
-    player.body.collideWorldBounds = true;
-    player.weapons = game.add.group();
     /**
      * Player Settings:
      */
+    player.weapons = game.add.physicsGroup();
+    player.weapons.setAll('body.collideWorldBounds', true);
+    player.weapons.setAll('body.bounce.x', 1);
+    player.weapons.setAll('body.bounce.y', 1);
     this.weaponTypes = ['PBR', 'COLD_BREW', 'MIMOSA'];
     this.currentWeapon = 'PBR';
     this.weaponIndex = 0;
@@ -88,22 +96,19 @@ export default class Player extends Phaser.Sprite {
 
   throw() {
     let player = this;
+    let game = player.game;
     let weaponType = player.currentWeapon;
-    let beer = player.weapons.create(player.x + 10, player.y - 10, weaponType);
-    if (beer) {
-      this.game.physics.arcade.enable(beer);
-      beer.body.gravity.y = 800;
-      beer.body.velocity.x = (player.facing === 'LEFT')
-        ? -400
-        : 400;
-      beer.body.velocity.y = -400;
-      beer.body.bounce = 0.2;
-      beer.scale.setTo(0.08);
-      beer.anchor.setTo(0.5, 0.5);
-      beer.checkWorldBounds = true;
-      beer.events.onOutOfBounds.add(function(beer) {
-        beer.destroy();
-      }, this);
+    let weapon = player.weapons.create(player.x + 10, player.y - 10, weaponType);
+    if (weapon) {
+      game.physics.enable(weapon);
+      weapon.body.gravity.y = 800;
+      weapon.body.velocity.x = (player.facing === 'LEFT') ? -400 : 400;
+      weapon.body.velocity.y = -400;
+      weapon.body.bounce.set(0.6);
+      weapon.scale.setTo(0.08);
+      weapon.anchor.setTo(0.5, 0.5);
+      weapon.checkWorldBounds = true;
+      weapon.events.onOutOfBounds.add(spriteKiller, this);
     }
   }
 }

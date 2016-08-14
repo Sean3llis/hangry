@@ -85,8 +85,9 @@ var Hangry =
 	    _classCallCheck(this, Hangry);
 	
 	    var game = (_this = _possibleConstructorReturn(this, Object.getPrototypeOf(Hangry).call(this, w, h, _phaser2.default.AUTO, 'mount', null)), _this);
+	    console.log('game.physics ~~>', game);
 	    // game.state.add('Boot', Boot, false);
-	    game.state.add('Main', _main2.default, false);
+	    game.state.add('Main', _main2.default, true);
 	    game.state.start('Main');
 	    return _this;
 	  }
@@ -103224,11 +103225,11 @@ var Hangry =
 	
 	var _mainCreate2 = _interopRequireDefault(_mainCreate);
 	
-	var _mainUpdate = __webpack_require__(16);
+	var _mainUpdate = __webpack_require__(15);
 	
 	var _mainUpdate2 = _interopRequireDefault(_mainUpdate);
 	
-	var _mainRender = __webpack_require__(17);
+	var _mainRender = __webpack_require__(16);
 	
 	var _mainRender2 = _interopRequireDefault(_mainRender);
 	
@@ -103250,12 +103251,11 @@ var Hangry =
 	  function Main() {
 	    _classCallCheck(this, Main);
 	
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Main).call(this));
-	
-	    console.log('main state this ~~>', _this);
 	    /**
 	     * lifecycle functions:
 	     */
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Main).call(this));
+	
 	    _this.preload = _mainPreload2.default;
 	    _this.create = _mainCreate2.default;
 	    _this.update = _mainUpdate2.default;
@@ -103264,6 +103264,18 @@ var Hangry =
 	  }
 	
 	  _createClass(Main, [{
+	    key: 'setLabels',
+	    value: function setLabels() {
+	      if (this.weaponLabel) return;
+	      this.weaponLabel = this.game.add.text(10, 10, '', {
+	        font: "bold 12px Arial",
+	        fill: "#282828",
+	        boundsAlignH: "center",
+	        boundsAlignV: "middle"
+	      });
+	      this.updateWeaponLabel(this.player.currentWeapon);
+	    }
+	  }, {
 	    key: 'handlePlayerMovement',
 	    value: function handlePlayerMovement(player) {
 	      var cursors = this.cursors;
@@ -103287,15 +103299,14 @@ var Hangry =
 	    value: function hipsterHit(hipster, weapon) {
 	      hipster.kill();
 	      weapon.kill();
-	      console.log('WOOOP');
 	    }
 	  }, {
 	    key: 'updateWeaponLabel',
 	    value: function updateWeaponLabel(label) {
-	      this.weaponLabel.text = 'Weapon: ' + label;
+	      this.weaponLabel.text = 'WEAPON: ' + label;
 	      this.weaponSprite.kill();
-	      this.weaponSprite = this.game.add.sprite(100, 100, label);
-	      this.weaponSprite.scale.setTo(0.1);
+	      this.weaponSprite = this.game.add.sprite(30, 30, label);
+	      this.weaponSprite.scale.setTo(0.2);
 	    }
 	  }]);
 	
@@ -103351,43 +103362,50 @@ var Hangry =
 	
 	var _hipster2 = _interopRequireDefault(_hipster);
 	
-	var _platformGroup = __webpack_require__(15);
-	
-	var _platformGroup2 = _interopRequireDefault(_platformGroup);
-	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
+	// import PlatformGroup from 'models/platform-group';
+	
+	
 	function create() {
-	  console.log('create this ~~>', this);
 	  var game = this.game;
-	  game.stage.backgroundColor = '#4488AA';
 	  game.physics.startSystem(Phaser.Physics.ARCADE);
+	  game.stage.backgroundColor = '#4488AA';
+	
 	  this.player = new _player2.default(game, {
 	    bounce: 0.3,
 	    gravity: 800,
 	    x: 32,
 	    y: game.world.height - 150
 	  });
-	  this.game.add.existing(this.player);
-	  this.hipster = new _hipster2.default(game, {
-	    bounce: 0.4,
-	    gravity: 800,
-	    x: game.world.width - 100,
-	    y: game.world.height - 100
-	  });
-	  this.game.add.existing(this.hipster);
-	  this.platforms = new _platformGroup2.default(game, {});
-	  this.floor = this.platforms.create(0, game.world.height - 20, 'PLATFORM');
+	  game.add.existing(this.player);
+	  game.physics.enable(this.player);
+	
+	  for (var i = 0; i < 5; i++) {
+	    this.hipster = new _hipster2.default(game, {
+	      bounce: 0.4,
+	      gravity: 800,
+	      x: game.rnd.integerInRange(10, game.world.width - 10),
+	      y: game.rnd.integerInRange(10, game.world.height - 10)
+	    });
+	  }
+	  game.add.existing(this.hipster);
+	  game.physics.enable(this.hipster);
+	
+	  this.platforms = game.add.physicsGroup();
+	  this.floor = game.add.sprite(0, game.world.height - 20, 'PLATFORM');
+	  game.physics.enable(this.floor);
 	  this.floor.body.immovable = true;
+	  this.floor.body.bounce = 1;
 	  this.floor.scale.setTo(3, 1);
 	  this.cursors = game.input.keyboard.createCursorKeys();
 	  this.spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 	  this.aKey = game.input.keyboard.addKey(65);
 	  this.aKey.onDown.add(this.player.throw, this.player);
 	  this.handleCycleWeapon = (0, _utils.debounce)(this.player.cycleWeapon, 50, true);
-	  var style = { font: "bold 16px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" };
-	  this.weaponLabel = game.add.text(18, 18, 'WEAPON:', style);
 	  this.weaponSprite = game.add.sprite(200, 18, 'STAR');
+	  this.setLabels();
+	  game.physics.arcade.enable([this.player, this.player.weapons, this.floor]);
 	}
 
 /***/ },
@@ -103415,7 +103433,13 @@ var Hangry =
 	  };
 	}
 	
+	function spriteKiller(sprite) {
+	  console.log("[kill sprite]: " + sprite.key);
+	  sprite.kill();
+	}
+	
 	exports.debounce = debounce;
+	exports.spriteKiller = spriteKiller;
 
 /***/ },
 /* 13 */
@@ -103432,6 +103456,8 @@ var Hangry =
 	var _phaser = __webpack_require__(5);
 	
 	var _phaser2 = _interopRequireDefault(_phaser);
+	
+	var _utils = __webpack_require__(12);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -103452,19 +103478,25 @@ var Hangry =
 	    var player = (_this = _possibleConstructorReturn(this, Object.getPrototypeOf(Player).call(this, game, config.x, config.y, 'DUDE')), _this);
 	    game.physics.arcade.enable(player);
 	    /**
-	     * Phaser Config:
+	     * Physics:
 	     */
-	    player.body.collidWorldBounds = true;
+	    player.body.collideWorldBounds = true;
 	    player.anchor.setTo(0.5);
 	    player.body.bounce.y = config.bounce;
 	    player.body.gravity.y = config.gravity;
+	    player.body.collideWorldBounds = true;
+	    /**
+	     * Animations
+	     */
 	    player.animations.add('left', [0, 1, 2, 3], 10, true);
 	    player.animations.add('right', [5, 6, 7, 8], 10, true);
-	    player.body.collideWorldBounds = true;
-	    player.weapons = game.add.group();
 	    /**
 	     * Player Settings:
 	     */
+	    player.weapons = game.add.physicsGroup();
+	    player.weapons.setAll('body.collideWorldBounds', true);
+	    player.weapons.setAll('body.bounce.x', 1);
+	    player.weapons.setAll('body.bounce.y', 1);
 	    _this.weaponTypes = ['PBR', 'COLD_BREW', 'MIMOSA'];
 	    _this.currentWeapon = 'PBR';
 	    _this.weaponIndex = 0;
@@ -103543,20 +103575,19 @@ var Hangry =
 	    key: 'throw',
 	    value: function _throw() {
 	      var player = this;
+	      var game = player.game;
 	      var weaponType = player.currentWeapon;
-	      var beer = player.weapons.create(player.x + 10, player.y - 10, weaponType);
-	      if (beer) {
-	        this.game.physics.arcade.enable(beer);
-	        beer.body.gravity.y = 800;
-	        beer.body.velocity.x = player.facing === 'LEFT' ? -400 : 400;
-	        beer.body.velocity.y = -400;
-	        beer.body.bounce = 0.2;
-	        beer.scale.setTo(0.08);
-	        beer.anchor.setTo(0.5, 0.5);
-	        beer.checkWorldBounds = true;
-	        beer.events.onOutOfBounds.add(function (beer) {
-	          beer.destroy();
-	        }, this);
+	      var weapon = player.weapons.create(player.x + 10, player.y - 10, weaponType);
+	      if (weapon) {
+	        game.physics.enable(weapon);
+	        weapon.body.gravity.y = 800;
+	        weapon.body.velocity.x = player.facing === 'LEFT' ? -400 : 400;
+	        weapon.body.velocity.y = -400;
+	        weapon.body.bounce.set(0.6);
+	        weapon.scale.setTo(0.08);
+	        weapon.anchor.setTo(0.5, 0.5);
+	        weapon.checkWorldBounds = true;
+	        weapon.events.onOutOfBounds.add(_utils.spriteKiller, this);
 	      }
 	    }
 	  }]);
@@ -103614,51 +103645,6 @@ var Hangry =
 
 /***/ },
 /* 15 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _phaser = __webpack_require__(5);
-	
-	var _phaser2 = _interopRequireDefault(_phaser);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-	
-	var Platform = function (_Phaser$Group) {
-	  _inherits(Platform, _Phaser$Group);
-	
-	  // (game, parent, name, addToStage, enableBody, physicsBodyType)
-	  function Platform(game, config) {
-	    var _this;
-	
-	    _classCallCheck(this, Platform);
-	
-	    config.name = config.name || 'platforms';
-	    config.addToStage = config.addToStage || true;
-	    config.enableBody = config.enableBody || true;
-	    config.physicsBodyType = config.physicsBodyType || _phaser2.default.Physics.ARCADE;
-	
-	    var platform = (_this = _possibleConstructorReturn(this, Object.getPrototypeOf(Platform).call(this, game, null, config.name, config.addToStage, config.enableBody, config.physicsBodyType)), _this);
-	    return _this;
-	  }
-	
-	  return Platform;
-	}(_phaser2.default.Group);
-	
-	exports.default = Platform;
-
-/***/ },
-/* 16 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -103670,15 +103656,16 @@ var Hangry =
 	function update() {
 	  var game = this.game;
 	  var player = this.player;
-	  game.physics.arcade.collide(player, this.platforms);
-	  game.physics.arcade.collide(this.beers, this.platforms);
-	  game.physics.arcade.collide(this.hipster, this.platforms);
+	  game.physics.arcade.collide(player, this.floor);
+	  game.physics.arcade.collide(this.hipster, this.floor);
+	  game.physics.arcade.collide(player.weapons, this.floor);
+	  game.physics.arcade.collide(player.weapons);
 	  game.physics.arcade.overlap(player.weapons, this.hipster, this.hipsterHit, null, game);
 	  this.handlePlayerMovement(player);
 	}
 
 /***/ },
-/* 17 */
+/* 16 */
 /***/ function(module, exports) {
 
 	"use strict";

@@ -10,7 +10,6 @@ import render from './main-render';
 class Main extends Phaser.State {
   constructor() {
     super();
-    console.log('main state this ~~>', this);
     /**
      * lifecycle functions:
      */
@@ -18,6 +17,17 @@ class Main extends Phaser.State {
     this.create = create
     this.update = update;
     this.render = render;
+  }
+
+  setLabels() {
+    if (this.weaponLabel) return;
+    this.weaponLabel = this.game.add.text(10, 10, '', {
+      font: "bold 12px Arial",
+      fill: "#282828",
+      boundsAlignH: "center",
+      boundsAlignV: "middle"
+    });
+    this.updateWeaponLabel(this.player.currentWeapon);
   }
 
   handlePlayerMovement(player) {
@@ -41,14 +51,13 @@ class Main extends Phaser.State {
   hipsterHit(hipster, weapon) {
     hipster.kill();
     weapon.kill();
-    console.log('WOOOP');
   }
 
   updateWeaponLabel(label) {
-    this.weaponLabel.text = `Weapon: ${label}`;
+    this.weaponLabel.text = `WEAPON: ${label}`;
     this.weaponSprite.kill();
-    this.weaponSprite = this.game.add.sprite(100, 100, label);
-    this.weaponSprite.scale.setTo(0.1);
+    this.weaponSprite = this.game.add.sprite(30, 30, label);
+    this.weaponSprite.scale.setTo(0.2);
   }
 
 

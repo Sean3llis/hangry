@@ -14,4 +14,9 @@ function debounce(func, wait, immediate) {
   }
 }
 
-export { debounce };
+function spriteKiller(sprite) {
+  console.log(`[kill sprite]: ${sprite.key}`);
+  sprite.kill();
+}
+
+export { debounce, spriteKiller };
