@@ -32,20 +32,19 @@ export default class Player extends Phaser.Sprite {
   cycleWeapon(direction) {
     let player = this.player;
     let weaponTypes = player.weaponTypes;
-    let currentWeapon = player.currentWeapon;
     switch (direction) {
       case 'UP':
         player.weaponIndex++;
         if (player.weaponIndex > player.weaponTypes.length - 1) player.weaponIndex = 0;
-        currentWeapon = weaponTypes[player.weaponIndex];
+        player.currentWeapon = weaponTypes[player.weaponIndex];
         break;
       case 'DOWN':
         player.weaponIndex--;
         if (player.weaponIndex < 0) player.weaponIndex = player.weaponTypes.length - 1;
-        currentWeapon = weaponTypes[player.weaponIndex];
+        player.currentWeapon = weaponTypes[player.weaponIndex];
         break;
     }
-    console.log('currentWeapon ~~>', currentWeapon);
+    console.log('currentWeapon ~~>', player.currentWeapon);
   }
 
   runLeft() {
@@ -91,6 +90,7 @@ export default class Player extends Phaser.Sprite {
   throw() {
     let player = this;
     let weaponType = player.currentWeapon;
+    console.log('weaponType ~~>', weaponType);
     let beer = player.weapons.create(player.x + 10, player.y - 10, weaponType);
     if (beer) {
       this.game.physics.arcade.enable(beer);
