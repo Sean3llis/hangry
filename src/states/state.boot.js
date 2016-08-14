@@ -6,6 +6,8 @@ import Player from '../models/player';
 import Hipster from '../models/hipster';
 import PlatformGroup from '../models/platform';
 
+console.log('PHASER.State ~~>', Phaser.State);
+
 export default class Boot extends Phaser.State {
   preload() {
     game.load.image('SKY', 'assets/sky.png');
@@ -57,10 +59,11 @@ export default class Boot extends Phaser.State {
     game.physics.arcade.collide(player, this.platforms);
     game.physics.arcade.collide(this.beers, this.platforms);
     game.physics.arcade.collide(this.hipster, this.platforms);
-    game.physics.arcade.overlap(player.weapons, this.hipster, function() {
-      console.log('BOOOOM');
-    }, null, this);
+    game.physics.arcade.overlap(player.weapons, this.hipster, this.hipsterHit, null, this);
     this.handlePlayerMovement(player);
+  }
+
+  render() {
   }
 
   handlePlayerMovement(player) {
@@ -79,9 +82,6 @@ export default class Boot extends Phaser.State {
     } else if (cursors.down.isDown) {
       this.handleCycleWeapon('DOWN');
     }
-  }
-
-  render() {
   }
 }
 

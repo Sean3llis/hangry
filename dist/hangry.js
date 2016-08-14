@@ -59,6 +59,10 @@ var Hangry =
 	
 	var _state2 = _interopRequireDefault(_state);
 	
+	var _main = __webpack_require__(12);
+	
+	var _main2 = _interopRequireDefault(_main);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -82,7 +86,8 @@ var Hangry =
 	
 	    var game = (_this = _possibleConstructorReturn(this, Object.getPrototypeOf(Hangry).call(this, w, h, _phaser2.default.AUTO, 'mount', null)), _this);
 	    game.state.add('Boot', _state2.default, false);
-	    game.state.start('Boot');
+	    game.state.add('Main', _main2.default, false);
+	    game.state.start('Main');
 	    return _this;
 	  }
 	
@@ -90,8 +95,6 @@ var Hangry =
 	}(_phaser2.default.Game);
 	
 	window.game = new Hangry(800, 400);
-	
-	console.log('window.game ~~>', window.game);
 
 /***/ },
 /* 1 */
@@ -103129,6 +103132,8 @@ var Hangry =
 	 */
 	
 	
+	console.log('PHASER.State ~~>', _phaser2.default.State);
+	
 	var Boot = function (_Phaser$State) {
 	  _inherits(Boot, _Phaser$State);
 	
@@ -103192,11 +103197,12 @@ var Hangry =
 	      game.physics.arcade.collide(player, this.platforms);
 	      game.physics.arcade.collide(this.beers, this.platforms);
 	      game.physics.arcade.collide(this.hipster, this.platforms);
-	      game.physics.arcade.overlap(player.weapons, this.hipster, function () {
-	        console.log('BOOOOM');
-	      }, null, this);
+	      game.physics.arcade.overlap(player.weapons, this.hipster, this.hipsterHit, null, this);
 	      this.handlePlayerMovement(player);
 	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {}
 	  }, {
 	    key: 'handlePlayerMovement',
 	    value: function handlePlayerMovement(player) {
@@ -103216,9 +103222,6 @@ var Hangry =
 	        this.handleCycleWeapon('DOWN');
 	      }
 	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {}
 	  }]);
 	
 	  return Boot;
@@ -103413,15 +103416,15 @@ var Hangry =
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var Player = function (_Phaser$Sprite) {
-	  _inherits(Player, _Phaser$Sprite);
+	var Hipster = function (_Phaser$Sprite) {
+	  _inherits(Hipster, _Phaser$Sprite);
 	
-	  function Player(game, config) {
+	  function Hipster(game, config) {
 	    var _this;
 	
-	    _classCallCheck(this, Player);
+	    _classCallCheck(this, Hipster);
 	
-	    var hipster = (_this = _possibleConstructorReturn(this, Object.getPrototypeOf(Player).call(this, game, config.x, config.y, 'BADDIE')), _this);
+	    var hipster = (_this = _possibleConstructorReturn(this, Object.getPrototypeOf(Hipster).call(this, game, config.x, config.y, 'BADDIE')), _this);
 	    game.physics.arcade.enable(hipster);
 	    hipster.anchor.setTo(0.5);
 	    hipster.body.bounce.y = config.bounce;
@@ -103432,10 +103435,10 @@ var Hangry =
 	    return _this;
 	  }
 	
-	  return Player;
+	  return Hipster;
 	}(_phaser2.default.Sprite);
 	
-	exports.default = Player;
+	exports.default = Hipster;
 
 /***/ },
 /* 11 */
@@ -103481,6 +103484,248 @@ var Hangry =
 	}(_phaser2.default.Group);
 	
 	exports.default = Platform;
+
+/***/ },
+/* 12 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _phaser = __webpack_require__(5);
+	
+	var _phaser2 = _interopRequireDefault(_phaser);
+	
+	var _mainPreload = __webpack_require__(13);
+	
+	var _mainPreload2 = _interopRequireDefault(_mainPreload);
+	
+	var _mainCreate = __webpack_require__(14);
+	
+	var _mainCreate2 = _interopRequireDefault(_mainCreate);
+	
+	var _mainUpdate = __webpack_require__(16);
+	
+	var _mainUpdate2 = _interopRequireDefault(_mainUpdate);
+	
+	var _mainRender = __webpack_require__(17);
+	
+	var _mainRender2 = _interopRequireDefault(_mainRender);
+	
+	var _player = __webpack_require__(9);
+	
+	var _player2 = _interopRequireDefault(_player);
+	
+	var _hipster = __webpack_require__(10);
+	
+	var _hipster2 = _interopRequireDefault(_hipster);
+	
+	var _platform = __webpack_require__(11);
+	
+	var _platform2 = _interopRequireDefault(_platform);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	/**
+	 * Import lifecycle functions:
+	 */
+	
+	
+	/**
+	 * Models:
+	 */
+	
+	
+	var Main = function (_Phaser$State) {
+	  _inherits(Main, _Phaser$State);
+	
+	  function Main() {
+	    _classCallCheck(this, Main);
+	
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Main).call(this));
+	
+	    _this.Player = _player2.default;
+	    _this.Hipster = _hipster2.default;
+	    _this.PlatformGroup = _platform2.default;
+	    return _this;
+	  }
+	
+	  _createClass(Main, [{
+	    key: 'handlePlayerMovement',
+	    value: function handlePlayerMovement(player) {
+	      var cursors = this.cursors;
+	      if (cursors.left.isDown) {
+	        player.runLeft();
+	      } else if (cursors.right.isDown) {
+	        player.runRight();
+	      } else {
+	        player.stop();
+	      }
+	
+	      if (this.spaceKey.isDown && player.body.touching.down) player.jump();
+	      if (cursors.up.isDown) {
+	        this.handleCycleWeapon('UP');
+	      } else if (cursors.down.isDown) {
+	        this.handleCycleWeapon('DOWN');
+	      }
+	    }
+	  }, {
+	    key: 'hipsterHit',
+	    value: function hipsterHit(hipster, weapon) {
+	      hipster.kill();
+	      weapon.kill();
+	      console.log('WOOOP');
+	    }
+	  }]);
+	
+	  return Main;
+	}(_phaser2.default.State);
+	
+	Main.prototype.preload = _mainPreload2.default;
+	Main.prototype.create = _mainCreate2.default;
+	Main.prototype.update = _mainUpdate2.default;
+	Main.prototype.render = _mainRender2.default;
+	
+	exports.default = Main;
+
+/***/ },
+/* 13 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = preload;
+	function preload() {
+	  game.load.image('SKY', 'assets/sky.png');
+	  game.load.image('PLATFORM', 'assets/platform.png');
+	  game.load.image('DIAMOND', 'assets/diamond.png');
+	  game.load.image('STAR', 'assets/star.png');
+	  game.load.image('PBR', 'assets/pbr.png');
+	  game.load.image('COLD_BREW', 'assets/coffee.png');
+	  game.load.image('MIMOSA', 'assets/mimosa.png');
+	  game.load.spritesheet('DUDE', 'assets/dude.png', 32, 48);
+	  game.load.spritesheet('BADDIE', 'assets/baddie.png', 32, 32);
+	}
+
+/***/ },
+/* 14 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = create;
+	
+	var _utils = __webpack_require__(15);
+	
+	function create() {
+	  var game = this.game;
+	  var Player = this.Player;
+	  var Hipster = this.Hipster;
+	  var PlatformGroup = this.PlatformGroup;
+	  game.stage.backgroundColor = '#4488AA';
+	  game.physics.startSystem(Phaser.Physics.ARCADE);
+	  this.player = new Player(game, {
+	    bounce: 0.3,
+	    gravity: 800,
+	    x: 32,
+	    y: game.world.height - 150
+	  });
+	  this.game.add.existing(this.player);
+	  this.hipster = new Hipster(game, {
+	    bounce: 0.4,
+	    gravity: 800,
+	    x: game.world.width - 100,
+	    y: game.world.height - 100
+	  });
+	  this.game.add.existing(this.hipster);
+	  this.platforms = new PlatformGroup(game, {});
+	  this.floor = this.platforms.create(0, game.world.height - 20, 'PLATFORM');
+	  this.floor.body.immovable = true;
+	  this.floor.scale.setTo(3, 1);
+	  this.cursors = game.input.keyboard.createCursorKeys();
+	  this.spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+	  this.aKey = game.input.keyboard.addKey(65);
+	  this.aKey.onDown.add(this.player.throw, this.player);
+	  this.handleCycleWeapon = (0, _utils.debounce)(this.player.cycleWeapon, 50, true);
+	  var style = { font: "bold 16px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" };
+	  this.weaponLabel = game.add.text(18, 18, 'WEAPON:', style);
+	  this.weaponSprite = game.add.sprite(200, 18, 'STAR');
+	}
+
+/***/ },
+/* 15 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	function debounce(func, wait, immediate) {
+	  var timeout;
+	  return function () {
+	    var context = this;
+	    var args = arguments;
+	    var later = function later() {
+	      timeout = null;
+	      if (!immediate) func.apply(context, args);
+	    };
+	    var callNow = immediate && !timeout;
+	    clearTimeout(timeout);
+	    timeout = setTimeout(later, wait);
+	    if (callNow) func.apply(context, args);
+	  };
+	}
+	
+	exports.debounce = debounce;
+
+/***/ },
+/* 16 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = update;
+	function update() {
+	  var game = this.game;
+	  var player = this.player;
+	  game.physics.arcade.collide(player, this.platforms);
+	  game.physics.arcade.collide(this.beers, this.platforms);
+	  game.physics.arcade.collide(this.hipster, this.platforms);
+	  game.physics.arcade.overlap(player.weapons, this.hipster, this.hipsterHit, null, this);
+	  this.handlePlayerMovement(player);
+	}
+
+/***/ },
+/* 17 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = render;
+	function render() {}
 
 /***/ }
 /******/ ]);

@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 
-export default class Player extends Phaser.Sprite {
+export default class Hipster extends Phaser.Sprite {
   constructor(game, config) {
     let hipster = super(game, config.x, config.y, 'BADDIE');
     game.physics.arcade.enable(hipster);
