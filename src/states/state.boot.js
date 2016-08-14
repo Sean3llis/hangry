@@ -3,6 +3,7 @@ import Phaser from 'phaser';
  * Models:
  */
 import Player from '../models/player';
+import Hipster from '../models/hipster';
 import PlatformGroup from '../models/platform';
 
 export default class Boot extends Phaser.State {
@@ -28,15 +29,18 @@ export default class Boot extends Phaser.State {
       x: 32,
       y: game.world.height - 150,
     });
-    this.baddie = game.add.sprite(100, 100, 'BADDIE');
-    this.baddie.animations.add('left', [0, 1], 4, true);
-    this.baddie.animations.add('right', [2,3], 10, true);
-    this.baddie.animations.play('left');
+    this.game.add.existing(this.player);
+    this.hipster = new Hipster(game, {
+      bounce: 0.4,
+      gravity: 800,
+      x: game.world.width - 100,
+      y: game.world.height - 100,
+    });
+    this.game.add.existing(this.hipster);
     this.platforms = new PlatformGroup(game, {});
     this.floor = this.platforms.create(0, game.world.height - 20, 'PLATFORM');
     this.floor.body.immovable = true;
     this.floor.scale.setTo(3, 1);
-    this.game.add.existing(this.player);
     this.cursors = game.input.keyboard.createCursorKeys();
     this.spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     this.aKey = game.input.keyboard.addKey(65);
@@ -52,6 +56,7 @@ export default class Boot extends Phaser.State {
     let player = this.player;
     game.physics.arcade.collide(player, this.platforms);
     game.physics.arcade.collide(this.beers, this.platforms);
+    game.physics.arcade.collide(this.hipster, this.platforms);
     this.handlePlayerMovement(player);
   }
 

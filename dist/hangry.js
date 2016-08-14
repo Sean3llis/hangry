@@ -103109,7 +103109,11 @@ var Hangry =
 	
 	var _player2 = _interopRequireDefault(_player);
 	
-	var _platform = __webpack_require__(10);
+	var _hipster = __webpack_require__(10);
+	
+	var _hipster2 = _interopRequireDefault(_hipster);
+	
+	var _platform = __webpack_require__(11);
 	
 	var _platform2 = _interopRequireDefault(_platform);
 	
@@ -103159,15 +103163,18 @@ var Hangry =
 	        x: 32,
 	        y: game.world.height - 150
 	      });
-	      this.baddie = game.add.sprite(100, 100, 'BADDIE');
-	      this.baddie.animations.add('left', [0, 1], 4, true);
-	      this.baddie.animations.add('right', [2, 3], 10, true);
-	      this.baddie.animations.play('left');
+	      this.game.add.existing(this.player);
+	      this.hipster = new _hipster2.default(game, {
+	        bounce: 0.4,
+	        gravity: 800,
+	        x: game.world.width - 100,
+	        y: game.world.height - 100
+	      });
+	      this.game.add.existing(this.hipster);
 	      this.platforms = new _platform2.default(game, {});
 	      this.floor = this.platforms.create(0, game.world.height - 20, 'PLATFORM');
 	      this.floor.body.immovable = true;
 	      this.floor.scale.setTo(3, 1);
-	      this.game.add.existing(this.player);
 	      this.cursors = game.input.keyboard.createCursorKeys();
 	      this.spaceKey = game.input.keyboard.addKey(_phaser2.default.Keyboard.SPACEBAR);
 	      this.aKey = game.input.keyboard.addKey(65);
@@ -103184,6 +103191,7 @@ var Hangry =
 	      var player = this.player;
 	      game.physics.arcade.collide(player, this.platforms);
 	      game.physics.arcade.collide(this.beers, this.platforms);
+	      game.physics.arcade.collide(this.hipster, this.platforms);
 	      this.handlePlayerMovement(player);
 	    }
 	  }, {
@@ -103386,6 +103394,52 @@ var Hangry =
 
 /***/ },
 /* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _phaser = __webpack_require__(5);
+	
+	var _phaser2 = _interopRequireDefault(_phaser);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var Player = function (_Phaser$Sprite) {
+	  _inherits(Player, _Phaser$Sprite);
+	
+	  function Player(game, config) {
+	    var _this;
+	
+	    _classCallCheck(this, Player);
+	
+	    var hipster = (_this = _possibleConstructorReturn(this, Object.getPrototypeOf(Player).call(this, game, config.x, config.y, 'BADDIE')), _this);
+	    game.physics.arcade.enable(hipster);
+	    hipster.anchor.setTo(0.5);
+	    hipster.body.bounce.y = config.bounce;
+	    hipster.body.gravity.y = config.gravity;
+	    hipster.animations.add('left', [0, 1], 10, true);
+	    hipster.animations.add('right', [2, 3], 10, true);
+	    hipster.body.collideWorldBounds = true;
+	    return _this;
+	  }
+	
+	  return Player;
+	}(_phaser2.default.Sprite);
+	
+	exports.default = Player;
+
+/***/ },
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
