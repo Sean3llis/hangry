@@ -1,10 +1,13 @@
 import { debounce } from 'utils';
 
+import Player from 'models/player';
+import Hipster from 'models/hipster';
+import PlatformGroup from 'models/platform-group';
+
+
 export default function create () {
+  console.log('create this ~~>', this);
   let game = this.game;
-  let Player = this.Player;
-  let Hipster = this.Hipster;
-  let PlatformGroup = this.PlatformGroup;
   game.stage.backgroundColor = '#4488AA';
   game.physics.startSystem(Phaser.Physics.ARCADE);
   this.player = new Player(game, {

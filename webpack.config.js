@@ -31,7 +31,7 @@ module.exports = {
       'phaser': phaser,
       'pixi': pixi,
       'p2': p2,
-      'model': path.join(__dirname, 'src', 'models'),
+      'models': path.join(__dirname, 'src', 'models'),
       'utils': path.join(__dirname, 'src', 'utils.js')
     }
   }

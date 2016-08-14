@@ -7,20 +7,19 @@ import create from './main-create';
 import update from './main-update';
 import render from './main-render';
 
-/**
- * Models:
- */
-import Player from 'model/player';
-import Hipster from 'model/hipster';
-import PlatformGroup from 'model/platform';
-
 class Main extends Phaser.State {
   constructor() {
     super();
-    this.Player = Player;
-    this.Hipster = Hipster;
-    this.PlatformGroup = PlatformGroup;
+    console.log('main state this ~~>', this);
+    /**
+     * lifecycle functions:
+     */
+    this.preload = preload
+    this.create = create
+    this.update = update;
+    this.render = render;
   }
+
   handlePlayerMovement(player) {
     let cursors = this.cursors;
     if (cursors.left.isDown) {
@@ -38,16 +37,27 @@ class Main extends Phaser.State {
       this.handleCycleWeapon('DOWN');
     }
   }
+
   hipsterHit(hipster, weapon) {
     hipster.kill();
     weapon.kill();
     console.log('WOOOP');
   }
+
+  updateWeaponLabel(label) {
+    this.weaponLabel.text = `Weapon: ${label}`;
+    this.weaponSprite.kill();
+    this.weaponSprite = this.game.add.sprite(100, 100, label);
+    this.weaponSprite.scale.setTo(0.1);
+  }
+
+
 }
 
-Main.prototype.preload = preload
-Main.prototype.create = create
-Main.prototype.update = update;
-Main.prototype.render = render;
+Main.prototype.tester = function() {
+  console.log('test');
+}
+
+
 
 export default Main;
