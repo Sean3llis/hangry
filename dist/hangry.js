@@ -103260,6 +103260,7 @@ var Hangry =
 	    _this.create = _mainCreate2.default;
 	    _this.update = _mainUpdate2.default;
 	    _this.render = _mainRender2.default;
+	    console.log('main state ~~>', _this);
 	    return _this;
 	  }
 	
@@ -103380,17 +103381,18 @@ var Hangry =
 	  });
 	  game.add.existing(this.player);
 	  game.physics.enable(this.player);
-	
+	  this.hipsters = game.add.physicsGroup();
+	  console.log('this.hipsters ~~>', this.hipsters);
 	  for (var i = 0; i < 5; i++) {
-	    this.hipster = new _hipster2.default(game, {
+	    new _hipster2.default(game, this.hipsters, {
 	      bounce: 0.4,
 	      gravity: 800,
 	      x: game.rnd.integerInRange(10, game.world.width - 10),
 	      y: game.rnd.integerInRange(10, game.world.height - 10)
 	    });
 	  }
-	  game.add.existing(this.hipster);
-	  game.physics.enable(this.hipster);
+	  // game.add.existing(this.hipster);
+	  game.physics.enable(this.hipsters);
 	
 	  this.platforms = game.add.physicsGroup();
 	  this.floor = game.add.sprite(0, game.world.height - 20, 'PLATFORM');
@@ -103622,7 +103624,7 @@ var Hangry =
 	var Hipster = function (_Phaser$Sprite) {
 	  _inherits(Hipster, _Phaser$Sprite);
 	
-	  function Hipster(game, config) {
+	  function Hipster(game, group, config) {
 	    var _this;
 	
 	    _classCallCheck(this, Hipster);
@@ -103630,11 +103632,13 @@ var Hangry =
 	    var hipster = (_this = _possibleConstructorReturn(this, Object.getPrototypeOf(Hipster).call(this, game, config.x, config.y, 'BADDIE')), _this);
 	    game.physics.arcade.enable(hipster);
 	    hipster.anchor.setTo(0.5);
-	    hipster.body.bounce.y = config.bounce;
+	    hipster.body.bounce.set(1);
 	    hipster.body.gravity.y = config.gravity;
+	    hipster.body.velocity.x = 200;
 	    hipster.animations.add('left', [0, 1], 10, true);
 	    hipster.animations.add('right', [2, 3], 10, true);
 	    hipster.body.collideWorldBounds = true;
+	    group.add(hipster);
 	    return _this;
 	  }
 	
@@ -103657,10 +103661,10 @@ var Hangry =
 	  var game = this.game;
 	  var player = this.player;
 	  game.physics.arcade.collide(player, this.floor);
-	  game.physics.arcade.collide(this.hipster, this.floor);
+	  game.physics.arcade.collide(this.hipsters, this.floor);
 	  game.physics.arcade.collide(player.weapons, this.floor);
 	  game.physics.arcade.collide(player.weapons);
-	  game.physics.arcade.overlap(player.weapons, this.hipster, this.hipsterHit, null, game);
+	  game.physics.arcade.overlap(player.weapons, this.hipsters, this.hipsterHit, null, game);
 	  this.handlePlayerMovement(player);
 	}
 

@@ -18,17 +18,18 @@ export default function create () {
   });
   game.add.existing(this.player);
   game.physics.enable(this.player);
-
+  this.hipsters = game.add.physicsGroup();
+  console.log('this.hipsters ~~>', this.hipsters);
   for (var i = 0; i < 5; i++) {
-    this.hipster = new Hipster(game, {
+    new Hipster(game, this.hipsters, {
       bounce: 0.4,
       gravity: 800,
       x:  game.rnd.integerInRange(10, game.world.width - 10),
       y:  game.rnd.integerInRange(10, game.world.height - 10),
     });
   }
-  game.add.existing(this.hipster);
-  game.physics.enable(this.hipster);
+  // game.add.existing(this.hipster);
+  game.physics.enable(this.hipsters);
 
   this.platforms = game.add.physicsGroup();
   this.floor = game.add.sprite(0, game.world.height - 20, 'PLATFORM');

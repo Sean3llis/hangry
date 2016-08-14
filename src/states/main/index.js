@@ -17,6 +17,7 @@ class Main extends Phaser.State {
     this.create = create
     this.update = update;
     this.render = render;
+    console.log('main state ~~>', this);
   }
 
   setLabels() {
