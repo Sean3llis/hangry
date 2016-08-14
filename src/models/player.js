@@ -44,7 +44,6 @@ export default class Player extends Phaser.Sprite {
         player.currentWeapon = weaponTypes[player.weaponIndex];
         break;
     }
-    console.log('currentWeapon ~~>', player.currentWeapon);
   }
 
   runLeft() {
@@ -90,7 +89,6 @@ export default class Player extends Phaser.Sprite {
   throw() {
     let player = this;
     let weaponType = player.currentWeapon;
-    console.log('weaponType ~~>', weaponType);
     let beer = player.weapons.create(player.x + 10, player.y - 10, weaponType);
     if (beer) {
       this.game.physics.arcade.enable(beer);
@@ -104,10 +102,8 @@ export default class Player extends Phaser.Sprite {
       beer.anchor.setTo(0.5, 0.5);
       beer.checkWorldBounds = true;
       beer.events.onOutOfBounds.add(function(beer) {
-        console.log('destroy beer', beer);
         beer.destroy();
       }, this);
     }
-    console.log('beer ~~>', beer);
   }
 }

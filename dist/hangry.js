@@ -103192,6 +103192,9 @@ var Hangry =
 	      game.physics.arcade.collide(player, this.platforms);
 	      game.physics.arcade.collide(this.beers, this.platforms);
 	      game.physics.arcade.collide(this.hipster, this.platforms);
+	      game.physics.arcade.overlap(player.weapons, this.hipster, function () {
+	        console.log('BOOOOM');
+	      }, null, this);
 	      this.handlePlayerMovement(player);
 	    }
 	  }, {
@@ -103316,7 +103319,6 @@ var Hangry =
 	          player.currentWeapon = weaponTypes[player.weaponIndex];
 	          break;
 	      }
-	      console.log('currentWeapon ~~>', player.currentWeapon);
 	    }
 	  }, {
 	    key: 'runLeft',
@@ -103367,7 +103369,6 @@ var Hangry =
 	    value: function _throw() {
 	      var player = this;
 	      var weaponType = player.currentWeapon;
-	      console.log('weaponType ~~>', weaponType);
 	      var beer = player.weapons.create(player.x + 10, player.y - 10, weaponType);
 	      if (beer) {
 	        this.game.physics.arcade.enable(beer);
@@ -103379,11 +103380,9 @@ var Hangry =
 	        beer.anchor.setTo(0.5, 0.5);
 	        beer.checkWorldBounds = true;
 	        beer.events.onOutOfBounds.add(function (beer) {
-	          console.log('destroy beer', beer);
 	          beer.destroy();
 	        }, this);
 	      }
-	      console.log('beer ~~>', beer);
 	    }
 	  }]);
 	
